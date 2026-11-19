@@ -11,12 +11,12 @@ import java.time.Period;
 
 public class CrearUsuarioService implements CrearUsuarioUseCase {
 
-    private static final Long ID_ROL_PROPIETARIO = 2L; // 1=ADMIN, 2=PROPIETARIO, 3=EMPLEADO, 4=CLIENTE
+    private static final Long ID_ROL_PROPIETARIO = 2L;
     private static final Long ID_ROL_EMPLEADO = 3L;
     private static final Long ID_ROL_CLIENTE = 4L;
 
     private static final String REGEX_CORREO = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-    private static final String REGEX_CELULAR = "^\\+?\\d{1,12}$"; // Máx 13 caracteres incluyendo '+'
+    private static final String REGEX_CELULAR = "^\\+?\\d{1,12}$";
     private static final String REGEX_NUMERICO = "^\\d+$";
 
     private final UsuarioRepositoryPort usuarioRepositoryPort;
@@ -29,34 +29,31 @@ public class CrearUsuarioService implements CrearUsuarioUseCase {
     }
 
     @Override
-    public void crearPropietario(Usuario usuario) {
+    public Usuario crearPropietario(Usuario usuario) {
         validarDatosComunes(usuario);
         validarMayorDeEdad(usuario.getFechaNacimiento());
         validarUnicidad(usuario);
-
-        registrarConRol(usuario, ID_ROL_PROPIETARIO);
+        return registrarConRol(usuario, ID_ROL_PROPIETARIO);
     }
 
     @Override
-    public void crearEmpleado(Usuario usuario) {
+    public Usuario crearEmpleado(Usuario usuario) {
         validarDatosComunes(usuario);
         validarUnicidad(usuario);
-
-        registrarConRol(usuario, ID_ROL_EMPLEADO);
+        return registrarConRol(usuario, ID_ROL_EMPLEADO);
     }
 
     @Override
-    public void crearCliente(Usuario usuario) {
+    public Usuario crearCliente(Usuario usuario) {
         validarDatosComunes(usuario);
         validarUnicidad(usuario);
-
-        registrarConRol(usuario, ID_ROL_CLIENTE);
+        return registrarConRol(usuario, ID_ROL_CLIENTE);
     }
 
-    private void registrarConRol(Usuario usuario, Long idRol) {
+    private Usuario registrarConRol(Usuario usuario, Long idRol) {
         usuario.setClave(passwordEncoderPort.encriptar(usuario.getClave()));
         usuario.setIdRol(idRol);
-        usuarioRepositoryPort.guardar(usuario);
+        return usuarioRepositoryPort.guardar(usuario);
     }
 
     private void validarUnicidad(Usuario usuario) {
