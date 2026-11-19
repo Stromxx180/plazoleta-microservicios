@@ -38,7 +38,7 @@ public class RestauranteController {
             @RequestParam(defaultValue = "10") int size) {
         List<RestauranteResponseDto> list = restauranteUseCase.listarRestaurantes(page, size)
                 .stream()
-                .map(r -> new RestauranteResponseDto(r.getNombre(), r.getUrlLogo()))
+                .map(r -> new RestauranteResponseDto(r.getId(), r.getNombre(), r.getUrlLogo()))
                 .toList();
         return ResponseEntity.ok(list);
     }

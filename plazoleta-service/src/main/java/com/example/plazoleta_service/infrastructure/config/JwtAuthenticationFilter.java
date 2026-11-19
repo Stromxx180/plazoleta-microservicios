@@ -36,10 +36,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Claims claims = jwtValidator.extraerClaims(token);
                 String correo = claims.getSubject();
                 String rol = claims.get("rol", String.class);
+                Object idUsuario = claims.get("idUsuario");
 
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                         correo, null, Collections.singletonList(new SimpleGrantedAuthority(rol))
                 );
+                auth.setDetails(idUsuario);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
